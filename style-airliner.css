@@ -1,0 +1,6 @@
+body{background:#ffffff;color:#000;font-family:monospace;margin:0;}
+.header{background:#eef;padding:12px;border-bottom:1px solid #ccd;}
+.container{padding:16px;}
+.card{background:#fff;border:1px solid #ccc;padding:12px;margin-bottom:12px;border-radius:6px;}
+.button{background:#0022cc;color:#fff;padding:8px;border-radius:6px;}
+input,select{padding:6px;border-radius:6px;border:1px solid #ccc;background:#fff;color:#000;}

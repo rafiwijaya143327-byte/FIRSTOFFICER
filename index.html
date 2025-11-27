@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>Flight Performance Pro</title>
+
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="styles/style-dark.css">
+
+<style>
+body { font-family: system-ui, sans-serif; margin: 0; padding: 0; }
+header {
+  background: #111;
+  color: #fff;
+  padding: 18px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+}
+.card {
+  background: #1b1b1b;
+  margin: 12px;
+  padding: 14px;
+  border-radius: 8px;
+  color: #ddd;
+}
+button {
+  padding: 10px 14px; 
+  margin: 6px 0;
+  font-size: 15px;
+  border-radius: 6px;
+  border: none;
+  background: #2a6bff;
+  color: #fff;
+  cursor: pointer;
+}
+button:active { opacity: 0.6; }
+label { display: block; margin: 8px 0 4px 0; font-size: 14px; }
+input, select {
+  width: 100%;
+  padding: 10px;
+  background: #222;
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+.range-value {
+  font-size: 13px;
+  opacity: 0.7;
+}
+.small { font-size: 13px; opacity: 0.8; }
+</style>
+</head>
+
+<body>
+
+<header>
+  Flight Performance Pro — Infinite Flight Edition
+</header>
+
+<!-- LIVE MODE -->
+<div class="card">
+  <h3>LIVE MODE — Infinite Flight API</h3>
+  <button id="if_connect_btn">Connect to IF</button>
+  <button id="if_disconnect_btn" style="display:none;">Disconnect</button>
+
+  <div id="if_status" class="small" style="margin-top:8px;">
+    Status: DISCONNECTED
+  </div>
+
+  <div id="if_info" class="small" style="margin-top:6px;">
+    (Awaiting connection…)
+  </div>
+</div>
+
+<!-- MANUAL MODE -->
+<div class="card">
+  <h3>Manual Mode (Slider Backup)</h3>
+
+  <label>IAS (kt)</label>
+  <input type="range" min="0" max="250" value="0" id="ias">
+  <div class="range-value">IAS: <span id="ias_val">0</span> kt</div>
+
+  <label>Altitude AGL (ft)</label>
+  <input type="range" min="0" max="2000" value="200" id="ra">
+  <div class="range-value">RA: <span id="ra_val">200</span> ft</div>
+
+  <label>Vertical Speed (fpm)</label>
+  <input type="range" min="-3000" max="2000" value="0" id="vs">
+  <div class="range-value">VS: <span id="vs_val">0</span> fpm</div>
+</div>
+
+<!-- WEIGHT -->
+<div class="card">
+  <h3>Weight & Config</h3>
+
+  <label>TOW (kg)</label>
+  <input type="number" id="tow" value="65000">
+
+  <label>Flap Setting</label>
+  <select id="flap">
+    <option value="1">Flap 1</option>
+    <option value="2">Flap 2</option>
+    <option value="3">Flap 3</option>
+    <option value="4">Flap FULL</option>
+  </select>
+</div>
+
+<!-- AUDIO & GPWS -->
+<div class="card">
+  <h3>Audio & GPWS</h3>
+  <button onclick="audio_core.armTakeoff()">Arm Takeoff Callouts</button>
+  <button onclick="audio_core.armLanding()">Arm Landing Callouts</button>
+  <button onclick="gpws_modes.armGPWS()">Arm GPWS</button>
+</div>
+
+<script src="modules/if_api_client.js"></script>
+<script src="modules/audio_core.js"></script>
+<script src="modules/perf_takeoff.js"></script>
+<script src="modules/gpws_modes.js"></script>
+<script src="app.js"></script>
+<script>
+  // Quick test for IFClient internals and try alternate WS path
+console.log("IFClient object:", window.IFClient);
+
+try {
+  // show socket if created
+  console.log("IFClient.socket:", IFClient.socket);
+  console.log("IFClient.connected:", IFClient.connected);
+} catch(e){ console.warn("IFClient unavailable", e); }
+
+// Try manual connect to likely endpoints and show errors
+const tryWS = (url)=>{
+  console.log("Trying WS", url);
+  const s = new WebSocket(url);
+  s.onopen = ()=>{ console.log("WS OPEN", url); s.close(); };
+  s.onerror = (ev)=>{ console.warn("WS ERROR", url, ev); };
+  s.onclose = ()=>{ console.log("WS CLOSED", url); };
+  s.onmessage = (m)=>{ console.log("WS MSG", url, m.data); };
+};
+
+// try common IF endpoints (local device)
+tryWS("ws://localhost:10111/");
+tryWS("ws://localhost:10111/aircraft/state");
+tryWS("ws://127.0.0.1:10111/");
+tryWS("ws://127.0.0.1:10111/aircraft/state");
+</script>
+<script>
+(async()=>{
+  const files = [
+    "modules/if_api_client.js",
+    "modules/audio_core.js",
+    "modules/perf_takeoff.js",
+    "modules/gpws_modes.js",
+    "app.js",
+    "styles/style-dark.css"
+  ];
+
+  let report = "FILE CHECK REPORT:\n\n";
+
+  for(const f of files){
+    try{
+      const r = await fetch(f, {method:"GET"});
+      if(r.status === 200){
+        report += `✔ FOUND: ${f}\n`;
+      } else {
+        report += `❌ MISSING: ${f}  (Status ${r.status})\n`;
+      }
+    } catch(e){
+      report += `❌ FAILED: ${f}\n`;
+    }
+  }
+
+  alert(report);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #0d0d0f;
+  color: #e5e5e5;
+  font-family: "SF Pro Display", system-ui, sans-serif;
+}
+
+header {
+  background: #111317;
+  padding: 18px;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  border-bottom: 1px solid #222;
+  color: #dcdcdc;
+}
+
+.card {
+  background: #131417;
+  border: 1px solid #202227;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 14px;
+  box-shadow: 0px 1px 4px #00000050;
+}
+
+h3 {
+  margin-top: 0px;
+  color: #cfd3e0;
+  letter-spacing: 0.3px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  background: #377BFF;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:active {
+  opacity: 0.6;
+}
+
+label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: #1d1f24;
+  color: #eaeaea;
+  border: 1px solid #333;
+  border-radius: 10px;
+  font-size: 14px;
+}
